@@ -1,0 +1,84 @@
+<?xml version="1.0"?>
+<tool id="ucsc_pslcheck" name="UCSC pslCheck" version="1.0">
+    <description>validate PSL files</description>
+    <requirements>
+      <requirement type="package" version="1.0">ucsc_tools_340_for_BLAT</requirement>
+    </requirements>
+    <stdio>
+        <exit_code range="1:" level="warning" description="invalid entries" />
+    </stdio>
+    <command><![CDATA[
+        faSize -detailed -tab '${query}' > query_sizes
+        && faSize -detailed -tab '${database}' > database_sizes 
+        && pslCheck 
+            -targetSizes=database_sizes
+            -querySizes=query_sizes
+            -pass='${pass_psl}'
+            '${input_psl}'
+]]></command>
+      <inputs>
+            <param type="data" name="database" format="fasta" />
+            <param type="data" name="query" format="fasta" />
+            <param type="data" name="input_psl" format="psl" />
+      </inputs>
+      <outputs>
+            <data format="psl" name="pass_psl" label="${tool.name} on ${on_string}: valid"></data>
+      </outputs>
+  <tests>
+      <test>
+            <param name="database" value="amaVit1_Gallus/amaVit1.fa" />
+            <param name="query" value="amaVit1_Gallus/Gallus_gallus_RefSeq.fa" />
+            <param name="input_psl" value="amaVit1_Gallus/amaVit1_Gallus_gallus_filtered.psl" />
+            <output name="pass_psl" value="amaVit1_Gallus/amaVit1_Gallus_gallus_filtered_valid.psl" />
+      </test>
+      <test>
+            <param name="database" value="dbia3/dbia3.fa" />
+            <param name="query" value="dbia3/dmel-all-transcript-r6.13.fasta" />
+            <param name="input_psl" value="dbia3/dbia3_dmel_filtered.psl" />
+            <output name="pass_psl" value="dbia3/dbia3_dmel_filtered_valid.psl" />
+      </test>
+
+  </tests> 
+  <help>
+        <![CDATA[
+pslCheck - validate PSL files
+==============================
+
+usage:
+
+   $ pslCheck fileTbl(s)
+
+options:
+   
+   -pass=pslFile - write PSLs without errors to this file
+
+   -targetSizes=sizesFile - tab file with columns of target and size.
+
+    If specified, psl is check to have a valid target and target
+    coordinates.
+
+   -querySizes=sizesFile - file with query sizes.
+
+Source code (v340):
+++++++++++++++++++++
+
+userApps.v340.src.tgz: http://hgdownload.cse.ucsc.edu/admin/exe/
+
+]]></help>  
+<citations>
+      <citation type="bibtex">@article{kent2002blat,
+  title={BLAT—the BLAST-like alignment tool},
+  author={Kent, W James},
+  journal={Genome research},
+  volume={12},
+  number={4},
+  pages={656--664},
+  year={2002},
+  publisher={Cold Spring Harbor Lab}
+      }</citation>
+</citations> 
+</tool>
+             
+            
+        
+
